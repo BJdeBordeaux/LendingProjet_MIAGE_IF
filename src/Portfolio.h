@@ -3,22 +3,33 @@
 
 #include <vector>
 #include "Part.h"
+#include "Facility.h"
+#include "Account.h"
+
+using namespace std;
 
 class Portfolio {
 public:
     // Constructor
-    Portfolio();
+    Portfolio(string  lender, const vector<Facility*>& facilities);
+    explicit Portfolio(string  lender);
 
-    // Getters
-    std::vector<Part>& getParts();
+    // getters and setters
+    string getLender() const;
+    vector<Facility*> getFacilities() const;
+    vector<double> getAllCurrencyInterests() const;
+
+    // search methods
+    Account* getAccountByCurrency(const string& currency);
 
     // Other methods
-    void addPart(const Part& part);
-    double calculateTotalInterest() const;
-    double getRemainingAmount() const;
+    Facility *addFacility(Facility* facility);
+    double recalculateCurrencyInterest(const string& currency);
 
 private:
-    std::vector<Part> parts;
+    string lender;
+    vector<Facility*> facilities;
+    vector<Account*> currencyAccounts;
 };
 
 #endif // PORTFOLIO_H

@@ -1,0 +1,5 @@
+La façon de calculer intérêt pour une Facility :
+    Si aujourd'hui est après la date de fin:
+        intérêt = (date de fin - date de début) * montant * taux
+    Sinon:
+        intérêt = 0

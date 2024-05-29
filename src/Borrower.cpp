@@ -1,23 +1,21 @@
+#include <iostream>
+#include <utility>
 #include "Borrower.h"
+#include "Portfolio.h"
 
+using namespace std;
 // Constructor
-Borrower::Borrower(const std::string& name, const Account& account)
-        : name(name), account(account) {}
+Borrower::Borrower(string name) : name(std::move(name)) {
+}
 
 // Getters
-std::string Borrower::getName() const {
+string Borrower::getName() const {
     return name;
 }
 
-Portfolio& Borrower::getPortfolio() {
-    return portfolio;
-}
 
-Account& Borrower::getAccount() {
-    return account;
-}
-
-// Other methods
-void Borrower::addDeal(const Deal& deal) {
-    // Implementation for adding a deal to the borrower's portfolio if necessary
-}
+//int main() {
+//    // test all method
+//    Borrower borrower("Borrower");
+//    cout << borrower.getName() << endl;
+//}

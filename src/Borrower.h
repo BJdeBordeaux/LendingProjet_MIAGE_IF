@@ -6,23 +6,21 @@
 #include "Account.h"
 #include "Deal.h"
 
+using namespace std;
+
 class Borrower {
 public:
     // Constructor
-    Borrower(const std::string& name, const Account& account);
+    Borrower(string  name);
 
     // Getters
-    std::string getName() const;
-    Portfolio& getPortfolio();
-    Account& getAccount();
-
-    // Other methods
-    void addDeal(const Deal& deal);
+    string getName() const;
+    Portfolio* getPortfolio();
 
 private:
-    std::string name;
-    Portfolio portfolio;
-    Account account;
+    string name;
+    Portfolio* portfolio;
 };
 
 #endif // BORROWER_H
+

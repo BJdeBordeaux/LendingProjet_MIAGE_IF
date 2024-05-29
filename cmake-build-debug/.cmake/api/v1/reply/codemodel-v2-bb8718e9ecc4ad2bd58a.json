@@ -1,0 +1,105 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.27"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "lendingProject",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Borrower::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Borrower-Debug-99cf481f32012e600c70.json",
+					"name" : "Borrower",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Deal::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Deal-Debug-255aae0559aa40a3b261.json",
+					"name" : "Deal",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Facility::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Facility-Debug-2e336bdd54cdbb9cbcd8.json",
+					"name" : "Facility",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Lender::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lender-Debug-a2fa0ee4af55f1eb8c59.json",
+					"name" : "Lender",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Portfolio::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Portfolio-Debug-389ea45a50d4e1ab19b2.json",
+					"name" : "Portfolio",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lendingProject::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lendingProject-Debug-aaf54adac6f8ff856bea.json",
+					"name" : "lendingProject",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug",
+		"source" : "C:/Users/qq870/Desktop/C++/lending_project"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

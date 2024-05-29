@@ -2,17 +2,23 @@
 #define ACCOUNT_H
 
 #include <string>
-
+using namespace std;
 class Account {
 public:
-    Account(const std::string& currency, double amount);
+    Account(string  currency, double amount);
+    explicit Account(string  currency);
 
-    void deposit(double amount);
-    void withdraw(double amount);
+    // getters and setters
+    string getCurrency();
     double getBalance() const;
+    void setBalance(double balance);
+
+    // Other methods
+    double deposit(double amount);
+    double withdraw(double amount);
 
 private:
-    std::string currency;
+    string currency;
     double amount;
 };
 

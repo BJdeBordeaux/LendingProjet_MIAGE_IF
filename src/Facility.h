@@ -4,33 +4,35 @@
 #include <string>
 #include <vector>
 #include "Part.h"
+using namespace std;
 
 class Facility {
 public:
     // Constructor
-    Facility(const std::string& startDate, const std::string& endDate, double amount, const std::string& currency,
-             const std::vector<std::string>& lenders);
+    Facility(string  startDate, string  endDate, vector<double> lenderAmounts, string  currency,
+             vector<string> lenders);
 
     // Getters
-    std::string getStartDate() const;
-    std::string getEndDate() const;
-    double getAmount() const;
-    std::string getCurrency() const;
-    std::vector<std::string> getLenders() const;
-    std::vector<Part>& getParts();
+    string getStartDate();
+    string getEndDate();
+    string getCurrency();
+    vector<string> getLenders();
+    vector<double> getLenderAmounts();
+    double getTotalAmount();
+    vector<Part>& getParts();
 
     // Other methods
-    void addPart(const Part& part);
-    double calculateInterest() const;
-    double getRemainingAmount() const;
+//    void addPart(const Part& part);
+    double calculateInterest(const string& lender);
+//    double getRemainingAmount();
 
 private:
-    std::string startDate;
-    std::string endDate;
-    double amount;
-    std::string currency;
-    std::vector<std::string> lenders;
-    std::vector<Part> parts;
+    string startDate;
+    string endDate;
+    string currency;
+    vector<string> lenders;
+    vector<double> lenderAmounts;
+    vector<Part> parts;
 };
 
 #endif // FACILITY_H

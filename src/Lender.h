@@ -5,24 +5,24 @@
 #include <vector>
 #include "Facility.h"
 #include "Account.h"
+#include "Portfolio.h"
+
+using namespace std;
 
 class Lender {
 public:
     // Constructor
-    Lender(const std::string& name, const Account& account);
+    Lender(const string& name);
 
     // Getters
-    std::string getName() const;
-    Account& getAccount();
-    std::vector<Facility>& getFacilities();
-
-    // Other methods
-    void participateInFacility(const Facility& facility);
+    string getName() const;
+    Portfolio* getPortfolio();
 
 private:
-    std::string name;
-    Account account;
-    std::vector<Facility> facilities;
+    string name;
+    Portfolio* portfolio;
 };
 
 #endif // LENDER_H
+
+

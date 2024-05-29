@@ -1,3 +1,8 @@
 C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/lendingProject.dir
+C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/Facility.dir
+C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/Portfolio.dir
+C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/Borrower.dir
+C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/Lender.dir
+C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/Deal.dir
 C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/edit_cache.dir
 C:/Users/qq870/Desktop/C++/lending_project/cmake-build-debug/CMakeFiles/rebuild_cache.dir

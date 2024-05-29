@@ -1,23 +1,23 @@
+#include <iostream>
 #include "Lender.h"
+#include "Portfolio.h"
+using namespace std;
 
 // Constructor
-Lender::Lender(const std::string& name, const Account& account)
-        : name(name), account(account) {}
+Lender::Lender(const string &name) : name(name) {
+    portfolio = new Portfolio(name);
+}
 
-// Getters
-std::string Lender::getName() const {
+string Lender::getName() const {
     return name;
 }
 
-Account& Lender::getAccount() {
-    return account;
+Portfolio *Lender::getPortfolio() {
+    return portfolio;
 }
 
-std::vector<Facility>& Lender::getFacilities() {
-    return facilities;
-}
-
-// Other methods
-void Lender::participateInFacility(const Facility& facility) {
-    facilities.push_back(facility);
-}
+//int main() {
+//    auto myLender = new Lender("Lender1");
+//    cout << myLender->getName() << endl;
+//    cout << myLender->getPortfolio()->getLender() << endl;
+//}

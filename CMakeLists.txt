@@ -44,6 +44,11 @@ set(SOURCE_FILES
 
 # Add the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(Facility src/Facility.cpp src/utils/Utils.cpp)
+add_executable(Portfolio src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
+add_executable(Borrower src/Borrower.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
+add_executable(Lender src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
+add_executable(Deal src/Deal.cpp src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
 
 ## Include directories for Google Test
 #include(FetchContent)

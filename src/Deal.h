@@ -5,40 +5,46 @@
 #include <vector>
 #include "Facility.h"
 
+using namespace std;
+
 class Deal {
 public:
     // Constructor
-    Deal(const std::string& contractNumber, const std::string& agent, const std::vector<std::string>& pool,
-         const std::string& borrower, double projectAmount, const std::string& currency,
-         const std::string& startDate, const std::string& endDate, const std::string& status);
+    Deal(string  contractNumber, string  agent, const vector<string>& pool,
+         string  borrower, double projectAmount, string  currency,
+         string  startDate, string  endDate, string  status);
+    Deal(string  contractNumber, string  agent, const vector<string>& pool,
+         string  borrower, double projectAmount, string  currency,
+         string  startDate, string  endDate);
+    Deal(string  contractNumber, string  agent, string  borrower, string  currency, vector<Facility* > facilities);
 
     // Getters
-    std::string getContractNumber() const;
-    std::string getAgent() const;
-    std::vector<std::string> getPool() const;
-    std::string getBorrower() const;
+    string getContractNumber() const;
+    string getAgent() const;
+    vector<string> getPool() const;
+    string getBorrower() const;
     double getProjectAmount() const;
-    std::string getCurrency() const;
-    std::string getStartDate() const;
-    std::string getEndDate() const;
-    std::string getStatus() const;
-    std::vector<Facility>& getFacilities();
+    string getCurrency() const;
+    string getStartDate() const;
+    string getEndDate() const;
+    string getStatus() const;
+    vector<Facility*> getFacilities();
 
     // Other methods
-    void addFacility(const Facility& facility);
+    Facility* addFacility(Facility* facility);
     double calculateTotalAmount() const;
 
 private:
-    std::string contractNumber;
-    std::string agent;
-    std::vector<std::string> pool;
-    std::string borrower;
+    string contractNumber;
+    string agent;
+    vector<string> pool;
+    string borrower;
     double projectAmount;
-    std::string currency;
-    std::string startDate;
-    std::string endDate;
-    std::string status;
-    std::vector<Facility> facilities;
+    string currency;
+    string startDate;
+    string endDate;
+    string status;
+    vector<Facility*> facilities;
 };
 
 #endif // DEAL_H
