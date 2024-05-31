@@ -43,6 +43,7 @@ void displayDeals() {
 
 Deal* createDeal() {
     string contractNumber, agent, borrowerName;
+    vector<Facility*> facilitiesToCreate = vector<Facility*>();
     cout << "Enter contract number: ";
     cin >> contractNumber;
     cout << "Enter agent: ";
@@ -50,8 +51,21 @@ Deal* createDeal() {
     cout << "Enter borrower: ";
     getline(cin >> ws, borrowerName);
 
-    auto borrower = new Borrower(borrowerName);
-    borrowers.push_back(borrower);
+    // if borrower does not exist, create a new one
+    bool borrowerExists = false;
+    Borrower *borrowerToAdd;
+    for (const auto& borrower : borrowers) {
+        if (borrower->getName() == borrowerName) {
+            borrowerExists = true;
+            borrowerToAdd = borrower;
+            break;
+        }
+    }
+    if (!borrowerExists) {
+        auto borrower = new Borrower(borrowerName);
+        borrowers.push_back(borrower);
+    }
+
 
     char addMore;
     do {
@@ -82,6 +96,7 @@ Deal* createDeal() {
         } while (addLender == 'y');
 
         auto facility = new Facility(startDate, endDate, lenderAmounts, currency, facilityLenders);
+        facilitiesToCreate.push_back(facility);
         facilities.push_back(facility);
 
         // add facility to lender's portfolio
@@ -97,7 +112,7 @@ Deal* createDeal() {
         cin >> addMore;
     } while (addMore == 'y');
 
-    auto deal = new Deal(contractNumber, agent, borrowerName, facilities);
+    auto deal = new Deal(contractNumber, agent, borrowerToAdd->getName(), facilitiesToCreate);
     deals.push_back(deal);
 
     cout << "Deal created successfully." << endl;
@@ -332,20 +347,29 @@ void prepareDemoData(){
     lenders.push_back(lender2);
     lenders.push_back(lender3);
 
-    auto borrower = new Borrower("Air France");
-    borrowers.push_back(borrower);
+    auto borrower1 = new Borrower("Air France");
+    auto borrower2 = new Borrower("Total Energie");
+    auto borrower3 = new Borrower("Danone");
+    borrowers.push_back(borrower1);
+    borrowers.push_back(borrower2);
+    borrowers.push_back(borrower3);
 
-    vector<double> lenderAmounts1 = vector<double>{1000, 2000};
+    vector<double> lenderAmounts1 = vector<double>{10000, 20000};
     vector<string> lendersVect1 = vector<string>{lender1->getName(), lender2->getName()};
-    vector<double> lenderAmounts2 = vector<double>{100, 200};
+    vector<double> lenderAmounts2 = vector<double>{1000, 2000};
     vector<string> lendersVect2 = vector<string>{lender1->getName(), lender3->getName()};
     auto facility1 = new Facility("2021-02-01", "2021-12-31", lenderAmounts1, "USD", lendersVect1);
     auto facility2 = new Facility("2021-01-01", "2021-11-30", lenderAmounts2, "EUR", lendersVect2);
-    auto facility3 = new Facility("2021-06-01", "2022-11-30", lenderAmounts2, "EUR", lendersVect1);
-    auto deal1 = new Deal("S0001", lender1->getName(), borrower->getName(), vector<Facility*>{facility1, facility2, facility3});
+    auto facility3 = new Facility("2021-06-01", "2024-11-30", lenderAmounts2, "EUR", lendersVect1);
+    auto deal1 = new Deal("S0001", lender1->getName(), borrower1->getName(), vector<Facility*>{facility1, facility2, facility3});
+
+    vector<string> lendersVect3 = vector<string>{lender2->getName(), lender3->getName()};
+    auto facility4 = new Facility("2021-02-01", "2021-12-31", lenderAmounts1, "RMB", lendersVect2);
+    auto facility5 = new Facility("2022-01-01", "2025-12-31", lenderAmounts2, "USD", lendersVect3);
+    auto deal2 = new Deal("S0002", lender3->getName(), borrower2->getName(), vector<Facility*>{facility4, facility5});
 
     // add Facilities to Lenders' portfolios
-    for (auto &createdFacility: {facility1, facility2, facility3}) {
+    for (auto &createdFacility: {facility1, facility2, facility3, facility4, facility5}) {
         for (auto &facilityLender: createdFacility->getLenders()) {
             for (auto &lender: lenders) {
                 if (lender->getName() == facilityLender) {
@@ -359,11 +383,14 @@ void prepareDemoData(){
     facilities.push_back(facility1);
     facilities.push_back(facility2);
     facilities.push_back(facility3);
+    facilities.push_back(facility4);
+    facilities.push_back(facility5);
     for (auto &lender: lenders) {
         portfolios.push_back(lender->getPortfolio());
     }
 
     deals.push_back(deal1);
+    deals.push_back(deal2);
 
 
 }
