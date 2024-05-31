@@ -34,8 +34,10 @@ Deal::Deal(string contractNumber, string agent, string borrower, vector<Facility
             end_date_str = facility_end_date;
         }
 
+        cout << "agent " << this->getAgent() << endl;
         // add lenders to pool
         for (const auto& lender : facility->getLenders()) {
+            cout << "lender: " << lender << endl;
             // if lender not in pool, add it
             bool found = false;
             for (const auto& poolLender : pool) {
@@ -44,7 +46,8 @@ Deal::Deal(string contractNumber, string agent, string borrower, vector<Facility
                     break;
                 }
             }
-            if (!found && lender != agent) {
+            if (!found && (lender != this->getAgent())) {
+                cout << "lender added: " << lender << endl;
                 this->pool.push_back(lender);
             }
         }
