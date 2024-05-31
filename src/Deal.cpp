@@ -2,46 +2,72 @@
 #include <iostream>
 #include "Deal.h"
 #include "Facility.h"
-#include "Portfolio.h"
 #include "utils/Utils.h"
 
 using namespace std;
 
 // Constructor
-Deal::Deal(string  contractNumber, string  agent, const vector<string>& pool,
-           string  borrower, double projectAmount, string  currency,
-           string  startDate, string  endDate, string  status)
-        : contractNumber(std::move(contractNumber)), agent(std::move(agent)), pool(pool),
-        borrower(std::move(borrower)), projectAmount(projectAmount), currency(std::move(currency)),
-        startDate(std::move(startDate)), endDate(std::move(endDate)), status(std::move(status)) {}
-
-Deal::Deal(string contractNumber, string agent, const vector<string> &pool, string borrower, double projectAmount,
-           string currency, string startDate, string endDate)
-           : contractNumber(std::move(contractNumber)), agent(std::move(agent)), pool(pool),
-           borrower(std::move(borrower)), projectAmount(projectAmount),currency(std::move(currency)),
-           startDate(std::move(startDate)), endDate(std::move(endDate)), status("closed"){}
-
-Deal::Deal(string contractNumber, string agent, string borrower, string currency, vector<Facility*> facilities)
+Deal::Deal(string contractNumber, string agent, string borrower, vector<Facility*> facilities)
     : contractNumber(std::move(contractNumber)), agent(std::move(agent)),
-    borrower(std::move(borrower)),currency(std::move(currency)), status("closed"){
+    borrower(std::move(borrower)), status("closed"){
+
+    // init
+    int currencyIndex = -1;
+    string start_date_str = facilities[0]->getStartDate();
+    string end_date_str = facilities[0]->getEndDate();
+
     // add facilities
     for (Facility* facility : facilities) {
         this->addFacility(facility);
     }
-    // find earliest start date as start_date and latest end date as end_date
-    string start_date = facilities[0]->getStartDate();
-    string end_date = facilities[0]->getEndDate();
-    // convert string to date
 
+    // check facilities information
     for (Facility* facility : facilities) {
-        if (facility->getStartDate() < start_date) {
-            start_date = facility->getStartDate();
+
+        // find the earliest start date as start_date_str and latest end date as end_date_str
+        string facility_start_date = facility->getStartDate();
+        string facility_end_date = facility->getEndDate();
+        if (Utils::dateDifference(start_date_str, facility_start_date) < 0) {
+            start_date_str = facility_start_date;
         }
-        if (facility->getEndDate() > end_date) {
-            end_date = facility->getEndDate();
+        if (Utils::dateDifference(end_date_str, facility_end_date) > 0) {
+            end_date_str = facility_end_date;
         }
+
+        // add lenders to pool
+        for (const auto& lender : facility->getLenders()) {
+            // if lender not in pool, add it
+            bool found = false;
+            for (const auto& poolLender : pool) {
+                if (lender == poolLender) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && lender != agent) {
+                this->pool.push_back(lender);
+            }
+        }
+
+        // add currency to currencies and its amount to projectAmounts
+        string facilityCurrency = facility->getCurrency();
+        currencyIndex = -1;
+        for (int i = 0; i < currencies.size(); i++) {
+            if (facility->getCurrency() == currencies.at(i)) {
+                currencyIndex = i;
+            }
+        }
+        if (currencyIndex == -1) {
+            this->currencies.push_back(facilityCurrency);
+            this->projectAmounts.push_back(facility->getTotalAmount());
+        } else {
+            this->projectAmounts.at(currencyIndex) += facility->getTotalAmount();
+        }
+
     }
 
+    this->startDate = start_date_str;
+    this->endDate = end_date_str;
 }
 
 // Getters
@@ -61,12 +87,12 @@ string Deal::getBorrower() const {
     return borrower;
 }
 
-double Deal::getProjectAmount() const {
-    return projectAmount;
+vector<double> Deal::getProjectAmounts() const {
+    return projectAmounts;
 }
 
-string Deal::getCurrency() const {
-    return currency;
+vector<string> Deal::getCurrencies() const {
+    return currencies;
 }
 
 string Deal::getStartDate() const {
@@ -91,49 +117,121 @@ Facility* Deal::addFacility(Facility* facility) {
     return facility;
 }
 
-double Deal::calculateTotalAmount() const {
-    double totalAmount = 0;
-    for (const auto facility : facilities) {
-        totalAmount += facility->getTotalAmount();
+void Deal::display(bool displayFacilities) {
+    cout << "[Deal] "<< contractNumber <<
+        " (" << startDate << " => " << endDate << ") status: " << status << endl;
+    cout << "\tCurrencies: ";
+    for (int i = 0; i < currencies.size()-1; i++) {
+        cout << projectAmounts[i] << " (" << currencies[i] << "), ";
     }
-    return totalAmount;
-}
-
-
-int main(){
-
-    // prepare data
-    vector<double> lenderAmounts1 = vector<double>{1000, 2000};
-    vector<string> lenders1 = vector<string>{"lenderA1", "lenderA2"};
-    vector<double> lenderAmounts2 = vector<double>{100, 200};
-    vector<string> lenders2 = vector<string>{"lenderA1", "lenderB2"};
-    auto facility = new Facility("2021-01-01", "2021-12-31", lenderAmounts1, "USD", lenders1);
-    auto facility2 = new Facility("2021-01-01", "2021-12-31", lenderAmounts2, "EUR", lenders2);
-
-    // test all methods
-    auto deal = new Deal("S0001", "LenderA1", vector<string>{"LenderA2", "LenderB2"}, "Borrower1", 1000, "USD", "2021-01-01", "2021-12-31");
-    deal->addFacility(facility);
-    deal->addFacility(facility2);
-    cout << "Deal contract number: " << deal->getContractNumber() << endl;
-    cout << "Deal agent: " << deal->getAgent() << endl;
-    cout << "Deal pool: ";
-    for (const auto& pool : deal->getPool()) {
-        cout << pool << ", ";
-    }
-    cout << endl;
-    cout << "Deal borrower: " << deal->getBorrower() << endl;
-    cout << "Deal project amount: " << deal->getProjectAmount() << endl;
-    cout << "Deal currency: " << deal->getCurrency() << endl;
-    cout << "Deal start date: " << deal->getStartDate() << endl;
-    cout << "Deal end date: " << deal->getEndDate() << endl;
-    cout << "Deal status: " << deal->getStatus() << endl;
-    cout << "Deal total amount: " << deal->calculateTotalAmount() << endl;
-    cout << "Deal facilities: ";
-    for (const auto& facility : deal->getFacilities()) {
-        cout << "(" << facility->getCurrency() << ") ";
-    }
+    cout << projectAmounts[currencies.size()-1] << " (" << currencies[currencies.size()-1] << ")";
     cout << endl;
 
-    return EXIT_SUCCESS;
+    cout << "\tBorrower: " << borrower << endl;
+    cout << "\tAgent: " << agent << endl;
+    cout << "\tPool: ";
+    for (int i = 0; i < pool.size()-1; i++) {
+        cout << this->pool[i] << ", ";
+    }
+    cout << this->pool[pool.size()-1] << endl;
+    cout << endl;
+    if (displayFacilities) {
+        for (const auto& facility : facilities) {
+            cout << "\t";
+            facility->display(true);
+        }
+    }
 }
 
+void Deal::serialize(ostream& out) const {
+    out << "Deal: {" << endl;
+    out << "    contractNumber: " << endl;
+    out << "        " << contractNumber << endl;
+    out << "    agent: " << endl;
+    out << "        " << agent << endl;
+    out << "    borrower: " << endl;
+    out << "        " << borrower << endl;
+    out << "    status: " << endl;
+    out << "        " << status << endl;
+    out << "    startDate: " << endl;
+    out << "        " << startDate << endl;
+    out << "    endDate: " << endl;
+    out << "        " << endDate << endl;
+    out << "    facilities: [" << endl;
+    for (Facility* fac : facilities) {
+        fac->serialize(out);
+    }
+    out << "    ]" << endl;
+    out << "}" << endl;
+}
+
+Deal* Deal::deserialize(istream& in) {
+    string line, cn, ag, brw, st, sDate, eDate;
+    vector<Facility*> facs;
+
+    getline(in, line);
+    if (line != "Deal: {") {
+        cerr << "Expected 'Deal: {' but got: \"" << line  << "\"" << endl;
+        // print the rest
+        while (getline(in, line)) {
+            cerr << line << endl;
+        }
+        return nullptr;
+    }
+
+    // Read contractNumber
+    getline(in, line);  // Skip "contractNumber:"
+    getline(in, cn);    // Read contractNumber
+    cn = Utils::trim(cn);
+
+    // Read agent
+    getline(in, line);  // Skip "agent:"
+    getline(in, ag);    // Read agent
+    ag = Utils::trim(ag);
+
+    // Read borrower
+    getline(in, line);  // Skip "borrower:"
+    getline(in, brw);   // Read borrower
+    brw = Utils::trim(brw);
+
+    // Read status
+    getline(in, line);  // Skip "status:"
+    getline(in, st);    // Read status
+    st = Utils::trim(st);
+
+    // Read startDate
+    getline(in, line);  // Skip "startDate:"
+    getline(in, sDate); // Read startDate
+    sDate = Utils::trim(sDate);
+
+    // Read endDate
+    getline(in, line);  // Skip "endDate:"
+    getline(in, eDate); // Read endDate
+    eDate = Utils::trim(eDate);
+
+    // Read facilities
+    getline(in, line);  // Skip "facilities: ["
+    while (getline(in, line) && Utils::trim(line) != "]") {
+        if (line == "Facility: {") {
+            stringstream ss;
+            ss << line << endl;
+            while (getline(in, line) && line != "}") {
+                ss << line << endl;
+            }
+            ss << line;
+            Facility* fac = Facility::deserialize(ss);
+            if (fac) {
+                facs.push_back(fac);
+            }
+        }
+    }
+
+    getline(in, line);  // Skip "}"
+
+    if (line != "}") {
+        cerr << "[Deal] Expected '}' but got: \"" << line << "\"" << endl;
+        return nullptr;
+    }
+
+    return new Deal(cn, ag, brw, facs);
+}

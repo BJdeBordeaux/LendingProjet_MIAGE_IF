@@ -11,15 +11,20 @@ using namespace std;
 class Borrower {
 public:
     // Constructor
-    Borrower(string  name);
+    explicit Borrower(string  name);
 
     // Getters
     string getName() const;
-    Portfolio* getPortfolio();
+
+    // Other methods
+    void display();
+
+    // Serialization
+    void serialize(ostream& out) const;
+    static Borrower* deserialize(istream& in);
 
 private:
     string name;
-    Portfolio* portfolio;
 };
 
 #endif // BORROWER_H

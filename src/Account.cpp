@@ -1,7 +1,9 @@
 #include <utility>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include "Account.h"
+#include "utils/Utils.h"
 using namespace std;
 Account::Account(string currency, double amount)
         : currency(std::move(currency)), amount(amount) {}
@@ -35,16 +37,42 @@ void Account::setBalance(double balance) {
     this->amount = balance;
 }
 
+void Account::serialize(ostream& out) const {
+    out << "Account: {" << endl;
+    out << "    currency: " <<endl;
+    out << "        " << currency << endl;
+    out << "    amount: " << amount << endl;
+    out << "}" << endl;
+}
 
-//int main() {
-//    // what is store in a vector of class, is it the object or the reference to the object?
-//    auto account1 = new Account("USD", 1000);
-//    vector<Account*> currencyAccounts;
-//    currencyAccounts.push_back(account1);
-//    cout << "Account 1 balance: " << currencyAccounts[0]->getBalance() << endl;
-//    account1->deposit(1000);
-//    cout << "Account 1 balance after deposit: " << currencyAccounts[0]->getBalance() << endl;
-//    return 0;
-//}
+Account* Account::deserialize(istream& in) {
+    string line, curr;
+    double amt;
+
+    getline(in, line);
+    if (line != "Account: {") {
+        cerr << "Expected 'Account: {' but got: \"" << line  << "\"" << endl;
+        return nullptr;
+    }
+
+    // Read currency
+    getline(in, line);  // Skip "currency:"
+    getline(in, curr);  // Read currency
+    // trim white spaces
+    curr = Utils::trim(curr);
+    in >> line >> amt;  // Read amount
+    in >> line;  // Skip "}"
+
+    if (line != "}") {
+        cerr << "[Account] Expected '}' but got: \"" << line << "\"" << endl;
+        return nullptr;
+    }
+
+    return new Account(curr, amt);
+}
+
+void Account::display() {
+    cout << fixed << setprecision(2) << "[Account] " << this->amount << " " << this->currency << endl;
+}
 
 

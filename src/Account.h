@@ -13,9 +13,16 @@ public:
     double getBalance() const;
     void setBalance(double balance);
 
+    // Serialization
+    void serialize(ostream& out) const;
+    static Account* deserialize(istream& in);
+
     // Other methods
     double deposit(double amount);
     double withdraw(double amount);
+    void display();
+
+
 
 private:
     string currency;

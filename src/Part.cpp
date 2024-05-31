@@ -1,27 +1,55 @@
 #include "Part.h"
+#include "utils/Utils.h"
+
+#include <utility>
 
 // Constructor
-Part::Part(double repaidAmount, double interest)
-        : repaidAmount(repaidAmount), interest(interest) {}
+Part::Part(string borrower, double repaidAmount): borrower(std::move(borrower)), repaidAmount(repaidAmount) {}
 
 // Getters
 double Part::getRepaidAmount() const {
     return repaidAmount;
 }
 
-double Part::getInterest() const {
-    return interest;
+string Part::getBorrower() const {
+    return borrower;
 }
 
-// Other methods
-double Part::calculateInterest(double rate, int period) {
-    // Example simple interest calculation
-    interest = repaidAmount * rate * period / 100.0;
-    return interest;
+void Part::serialize(ostream& out) const {
+    out << "Part: {" << endl;
+    out << "    borrower: " << endl;
+    out << "        " << borrower << endl;
+    out << "    repaidAmount: " << repaidAmount << endl;
+    out << "}" << endl;
 }
 
-void Part::updateAmount(double amount) {
-    repaidAmount += amount;
-    // Optionally, recalculate interest if required
-    // interest = calculateInterest(some_rate, some_period);
+Part* Part::deserialize(istream& in) {
+    string line, brw;
+    double repAmt;
+
+    getline(in, line);
+    if (line != "Part: {") {
+        cerr << "Expected 'Part: {' but got: \"" << line  << "\"" << endl;
+        return nullptr;
+    }
+
+    // Read borrower
+    getline(in, line);  // Skip "borrower:"
+    getline(in, brw);   // Read borrower
+    // trim white spaces
+    brw = Utils::trim(brw);
+    in >> line >> repAmt;  // Read repaidAmount
+    in >> line;  // Skip "}"
+
+    if (line != "}") {
+        cerr << "[Part] Expected '}' but got: \"" << line << "\"" << endl;
+        return nullptr;
+    }
+
+    return new Part(brw, repAmt);
 }
+
+void Part::display() {
+    cout << "[Part] " << this->borrower << " " << this->repaidAmount << endl;
+}
+

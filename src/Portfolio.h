@@ -18,6 +18,8 @@ public:
     string getLender() const;
     vector<Facility*> getFacilities() const;
     vector<double> getAllCurrencyInterests() const;
+    vector<string> getAllCurrencies() const;
+    vector<Account*> getCurrencyAccounts() const;
 
     // search methods
     Account* getAccountByCurrency(const string& currency);
@@ -25,6 +27,11 @@ public:
     // Other methods
     Facility *addFacility(Facility* facility);
     double recalculateCurrencyInterest(const string& currency);
+    void display();
+
+    // Serialization
+    void serialize(ostream& out) const;
+    static Portfolio* deserialize(istream& in);
 
 private:
     string lender;

@@ -46,7 +46,7 @@ string Utils::getCurrentDate() {
     return oss.str();
 }
 
-// Function to parse a date string in the format "YYYY-MM-DD" to a std::tm structure
+// Function to parse a date string in the format "YYYY-MM-DD" to a tm structure
 tm Utils::parseDate(const string& dateStr) {
     tm tm = {};
     stringstream ss(dateStr);
@@ -76,6 +76,18 @@ int Utils::dateDifferenceTodayMinusADate(const string& dateStr) {
     time_t timeDate = mktime(&tmDate);
     double difference = difftime(timeNow, timeDate);
     return static_cast<int>(difference / (60 * 60 * 24));
+}
+
+string Utils::trim(const string &s) {
+    string::const_iterator it = s.begin();
+    while (it != s.end() && isspace(*it))
+        it++;
+
+    string::const_reverse_iterator rit = s.rbegin();
+    while (rit.base() != it && isspace(*rit))
+        rit++;
+
+    return std::string(it, rit.base());
 }
 
 //int main() {

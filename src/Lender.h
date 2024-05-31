@@ -12,11 +12,18 @@ using namespace std;
 class Lender {
 public:
     // Constructor
-    Lender(const string& name);
+    explicit Lender(const string& name);
 
     // Getters
     string getName() const;
     Portfolio* getPortfolio();
+
+    // Other methods
+    void display();
+
+    // Serialization
+    void serialize(ostream& out) const;
+    static Lender* deserialize(istream& in);
 
 private:
     string name;

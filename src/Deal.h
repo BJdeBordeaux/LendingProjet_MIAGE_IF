@@ -10,21 +10,15 @@ using namespace std;
 class Deal {
 public:
     // Constructor
-    Deal(string  contractNumber, string  agent, const vector<string>& pool,
-         string  borrower, double projectAmount, string  currency,
-         string  startDate, string  endDate, string  status);
-    Deal(string  contractNumber, string  agent, const vector<string>& pool,
-         string  borrower, double projectAmount, string  currency,
-         string  startDate, string  endDate);
-    Deal(string  contractNumber, string  agent, string  borrower, string  currency, vector<Facility* > facilities);
+    Deal(string  contractNumber, string  agent, string  borrower, vector<Facility* > facilities);
 
     // Getters
     string getContractNumber() const;
     string getAgent() const;
     vector<string> getPool() const;
     string getBorrower() const;
-    double getProjectAmount() const;
-    string getCurrency() const;
+    vector<double> getProjectAmounts() const;
+    vector<string> getCurrencies() const;
     string getStartDate() const;
     string getEndDate() const;
     string getStatus() const;
@@ -32,15 +26,19 @@ public:
 
     // Other methods
     Facility* addFacility(Facility* facility);
-    double calculateTotalAmount() const;
+    void display(bool displayFacilities = false);
+
+    // Serialization
+    void serialize(ostream& out) const;
+    static Deal* deserialize(istream& in);
 
 private:
     string contractNumber;
     string agent;
     vector<string> pool;
     string borrower;
-    double projectAmount;
-    string currency;
+    vector<double> projectAmounts;
+    vector<string> currencies;
     string startDate;
     string endDate;
     string status;

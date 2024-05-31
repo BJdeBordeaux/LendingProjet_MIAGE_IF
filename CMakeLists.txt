@@ -5,14 +5,27 @@ project(lendingProject)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Add the path to the MySQL CMake configuration files
-#set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "/path/to/mysql/")
+# Set the path to the MySQL Connector/C++ installation
+set(MYSQL_CONNECTOR_CPP_INCLUDE_DIR "C://Users//qq870//Desktop//tools//mysql-connector-c++-8.4.0-winx64//include")
+set(MYSQL_CONNECTOR_CPP_LIBRARY_DIR "C://Users//qq870//Desktop//tools//mysql-connector-c++-8.4.0-winx64//lib64")
+set(CMAKE_SOURCE_DIR "C://Users//qq870//Desktop//tools//mysql-connector-c++-8.4.0-winx64")
 
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+# Add the path to the CMake module for MySQL Connector/C++
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+
+# Include directories
+include_directories(${MYSQL_CONNECTOR_CPP_INCLUDE_DIR})
+include_directories(${MYSQL_CONNECTOR_CPP_INCLUDE_DIR}/jdbc)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+
+# Link directories
+link_directories(${MYSQL_CONNECTOR_CPP_LIBRARY_DIR})
+
+## Find MySQL Connector/C++ package
 #find_package(MySQL REQUIRED)
-#find_package(mysqlclient REQUIRED)
-#include_directories(${MySQL_INCLUDE_DIRS})
-#target_link_libraries(${PROJECT_NAME} ${MySQL_LIBRARIES})
+
+include_directories("C://Users//qq870//Desktop//tools//mysql-connector-c++-8.4.0-winx64//include")
+link_directories("C://Users//qq870//Desktop//tools//mysql-connector-c++-8.4.0-winx64//lib64")
 
 
 # Include directories
@@ -36,30 +49,21 @@ set(SOURCE_FILES
         src/Lender.h
         src/Account.cpp
         src/Account.h
-#        src/Database.cpp
-#        src/Database.h
         src/utils/Utils.cpp
         src/utils/Utils.h
 )
 
 # Add the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_executable(Facility src/Facility.cpp src/utils/Utils.cpp)
-add_executable(Portfolio src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
-add_executable(Borrower src/Borrower.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
-add_executable(Lender src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
-add_executable(Deal src/Deal.cpp src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp)
-
-## Include directories for Google Test
-#include(FetchContent)
-#FetchContent_Declare(
-#        googletest
-#        URL https://github.com/google/googletest/archive/release-1.11.0.tar.gz
-#)
-#FetchContent_MakeAvailable(googletest)
-#
-#enable_testing()
-#add_subdirectory(tests)
-#
-## Link Google Test libraries
-#target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+add_executable(Account src/tests/testAccount.cpp src/Account.cpp src/utils/Utils.cpp)
+add_executable(Facility src/Facility.cpp src/utils/Utils.cpp src/Part.cpp
+        src/tests/testFacility.cpp)
+add_executable(Portfolio src/tests/testPortfolio.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp
+        src/Part.cpp)
+add_executable(Borrower src/Borrower.cpp src/utils/Utils.cpp src/Account.cpp
+        src/tests/testBorrower.cpp)
+add_executable(Lender src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp
+        src/tests/testLender.cpp src/Part.cpp)
+add_executable(Deal src/Deal.cpp src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/utils/Utils.cpp src/Account.cpp
+        src/tests/testDeal.cpp src/Part.cpp)
+add_executable(Part src/tests/testPart.cpp src/Part.cpp src/utils/Utils.cpp)

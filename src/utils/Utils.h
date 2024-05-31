@@ -29,6 +29,9 @@ public:
 
     // Calculate the difference in days between a given date and today
     static int dateDifferenceTodayMinusADate(const string& dateStr);
+
+    // trim white space
+    static string trim(const string &s);
 };
 
 #endif // UTILS_H

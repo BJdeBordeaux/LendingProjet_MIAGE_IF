@@ -19,12 +19,18 @@ public:
     vector<string> getLenders();
     vector<double> getLenderAmounts();
     double getTotalAmount();
-    vector<Part>& getParts();
+    vector<Part*> getParts();
 
     // Other methods
-//    void addPart(const Part& part);
+    Part* addPart(Part* part);
     double calculateInterest(const string& lender);
-//    double getRemainingAmount();
+    double calculateTotalInterest();
+    double calculateRemainingInterestAmount();
+    void display(bool displayLenders = false);
+
+    // Serialization
+    void serialize(ostream& out) const;
+    static Facility* deserialize(istream& in);
 
 private:
     string startDate;
@@ -32,7 +38,7 @@ private:
     string currency;
     vector<string> lenders;
     vector<double> lenderAmounts;
-    vector<Part> parts;
+    vector<Part*> parts;
 };
 
 #endif // FACILITY_H
