@@ -16,34 +16,7 @@ int main(){
     auto facility2 = new Facility("2021-01-01", "2021-11-30", lenderAmounts2, "EUR", lenders2);
 
     // test all methods
-    auto deal = new Deal("S0001", "LenderA1", "Borrower1", vector<Facility*>{facility1, facility2});
-    cout << "Deal contract number: " << deal->getContractNumber() << endl;
-    cout << "Deal agent: " << deal->getAgent() << endl;
-    cout << "Deal pool: ";
-    for (const auto& pool : deal->getPool()) {
-        cout << pool << ", ";
-    }
-    cout << endl;
-    cout << "Deal borrower: " << deal->getBorrower() << endl;
-    cout << "Deal project amounts: ";
-    for (const auto& projectAmount : deal->getProjectAmounts()) {
-        cout << projectAmount << ", ";
-    }
-    cout << endl;
-    cout << "Deal currencies: ";
-    for (const auto& currency : deal->getCurrencies()) {
-        cout << currency << ", ";
-    }
-    cout << endl;
-    cout << "Deal start date: " << deal->getStartDate() << endl;
-    cout << "Deal end date: " << deal->getEndDate() << endl;
-    cout << "Deal status: " << deal->getStatus() << endl;
-    cout << "Deal facilities: ";
-    for (const auto& facility : deal->getFacilities()) {
-        cout << "(" << facility->getCurrency() << ") ";
-    }
-    cout << endl;
-
+    auto deal = new Deal("S0001", "LenderA1", vector<string>{"Borrower1"}, vector<Facility*>{facility1, facility2});
     deal->display(true);
 
     // test serialization

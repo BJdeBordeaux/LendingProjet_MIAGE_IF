@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <ctime>
 #include "Utils.h"
-#include "../Account.h"
 
 using namespace std;
 
@@ -90,17 +89,91 @@ string Utils::trim(const string &s) {
     return std::string(it, rit.base());
 }
 
-//int main() {
-//    string dateStr1 = "2024-01-01";
-//    string dateStr2 = "2024-05-01";
-//
-//    int diff = dateDifference(dateStr1, dateStr2);
-//    cout << "Difference between " << dateStr1 << " and " << dateStr2 << " is " << diff << " days." << endl;
-//
-//    string dateStr3 = "2024-05-01";
-//    int diffFromToday = dateDifferenceTodayMinusADate(dateStr3);
-//    cout << "Difference between today and " << dateStr3 << " is " << diffFromToday << " days." << endl;
-//
-//    return 0;
-//}
+int Utils::getIntInput(const string &prompt) {
+    int num;
+    cout << prompt << endl;
+    cin >> num;
 
+    while (cin.fail()) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Please enter an integer." << endl;
+        cin >> num;
+    }
+    cin.ignore(1000, '\n');
+    return num;
+}
+
+double Utils::getMoneyInput(const string &prompt) {
+    double num;
+    cout << prompt << endl;
+    cin >> num;
+
+    while (cin.fail() || num < 0) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Please enter a positive number." << endl;
+        cin >> num;
+    }
+    cin.ignore(1000, '\n');
+    return num;
+}
+
+char Utils::getALetterInput(const string &prompt) {
+    char c;
+    cout << prompt << endl;
+    cin >> c;
+
+    while (cin.fail() || !isalpha(c)) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Please enter a letter." << endl;
+        cin >> c;
+    }
+    cin.ignore(1000, '\n');
+    // convert to lowercase
+    char c_lower = char (tolower(c));
+    return c_lower;
+}
+
+string Utils::getDateInput(const string &prompt) {
+    string date;
+    cout << prompt << endl;
+    cin >> date;
+
+    while (cin.fail() || date.length() != 10 || date[4] != '-' || date[7] != '-') {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Please enter a date in the format YYYY-MM-DD:" << endl;
+        cin >> date;
+        // convert it to tm, if fails, it will ask to input again
+        parseDate(date);
+    }
+    cin.ignore(1000, '\n');
+    return date;
+}
+
+string Utils::getContractNumber(const string &prompt) {
+    // contract number should be in the format : a letter (S,Z,B) following by 4 digits
+    string contractNumber;
+    cout << prompt << endl;
+    cin >> contractNumber;
+
+    while (cin.fail() || contractNumber.length() != 5 || (contractNumber[0]!= 'S' && contractNumber[0]!= 'Z' && contractNumber[0]!= 'B') || !isdigit(contractNumber[1]) || !isdigit(contractNumber[2]) || !isdigit(contractNumber[3]) || !isdigit(contractNumber[4])) {
+        // if the first letter is not S, Z or B, it will ask to input again
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Please enter a contract number in the format: a letter (S,Z,B) following by 4 digits." << endl;
+        cin >> contractNumber;
+    }
+
+    cin.ignore(1000, '\n');
+    return contractNumber;
+}
+
+string Utils::getStringInput(const string &prompt) {
+    string buffer;
+    cout << prompt << endl;
+    getline(cin >> ws, buffer);
+    return buffer;
+}

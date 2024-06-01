@@ -17,7 +17,7 @@ string Part::getBorrower() const {
 
 void Part::serialize(ostream& out) const {
     out << "Part: {" << endl;
-    out << "    borrower: " << endl;
+    out << "    borrowers: " << endl;
     out << "        " << borrower << endl;
     out << "    repaidAmount: " << repaidAmount << endl;
     out << "}" << endl;
@@ -33,9 +33,9 @@ Part* Part::deserialize(istream& in) {
         return nullptr;
     }
 
-    // Read borrower
-    getline(in, line);  // Skip "borrower:"
-    getline(in, brw);   // Read borrower
+    // Read borrowers
+    getline(in, line);  // Skip "borrowers:"
+    getline(in, brw);   // Read borrowers
     // trim white spaces
     brw = Utils::trim(brw);
     in >> line >> repAmt;  // Read repaidAmount

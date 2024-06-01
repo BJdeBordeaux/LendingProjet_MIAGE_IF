@@ -10,13 +10,14 @@ using namespace std;
 class Deal {
 public:
     // Constructor
-    Deal(string  contractNumber, string  agent, string  borrower, vector<Facility* > facilities);
+    Deal(string  contractNumber, string  agent, const vector<string>&  borrowers, vector<Facility* > facilities); // multiple borrowers
+//    Deal(string  contractNumber, string  agent, vector<Facility* > facilities); // multiple borrowers
 
     // Getters
     string getContractNumber() const;
     string getAgent() const;
     vector<string> getPool() const;
-    string getBorrower() const;
+    vector<string> getBorrowers() const;
     vector<double> getProjectAmounts() const;
     vector<string> getCurrencies() const;
     string getStartDate() const;
@@ -26,6 +27,7 @@ public:
 
     // Other methods
     Facility* addFacility(Facility* facility);
+    string addBorrower(string borrower);
     void display(bool displayFacilities = false);
 
     // Serialization
@@ -36,7 +38,7 @@ private:
     string contractNumber;
     string agent;
     vector<string> pool;
-    string borrower;
+    vector<string> borrowers;
     vector<double> projectAmounts;
     vector<string> currencies;
     string startDate;

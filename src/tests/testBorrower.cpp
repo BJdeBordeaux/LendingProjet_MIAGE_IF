@@ -10,10 +10,10 @@ int main() {
     cout << borrower.getName() << endl;
     borrower.display();
 
-    // Create a borrower object
+    // Create a borrowers object
     Borrower* borrower1 = new Borrower("John Doe");
 
-    // Serialize the borrower object to a file
+    // Serialize the borrowers object to a file
     ofstream outFile("borrowerSerialization.txt");
     if (outFile.is_open()) {
         borrower1->serialize(outFile);
@@ -23,7 +23,7 @@ int main() {
         cerr << "Unable to open file for writing." << endl;
     }
 
-    // Deserialize the borrower object from the file
+    // Deserialize the borrowers object from the file
     ifstream inFile("borrowerSerialization.txt");
     if (inFile.is_open()) {
         Borrower* restoredBorrower = Borrower::deserialize(inFile);
@@ -33,7 +33,7 @@ int main() {
             restoredBorrower->display();
             delete restoredBorrower; // Don't forget to free the memory
         } else {
-            cerr << "Failed to restore borrower from file." << endl;
+            cerr << "Failed to restore borrowers from file." << endl;
         }
     } else {
         cerr << "Unable to open file for reading." << endl;

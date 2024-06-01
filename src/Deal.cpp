@@ -3,18 +3,23 @@
 #include "Deal.h"
 #include "Facility.h"
 #include "utils/Utils.h"
+#include "Borrower.h"
 
 using namespace std;
 
 // Constructor
-Deal::Deal(string contractNumber, string agent, string borrower, vector<Facility*> facilities)
-    : contractNumber(std::move(contractNumber)), agent(std::move(agent)),
-    borrower(std::move(borrower)), status("closed"){
+Deal::Deal(string contractNumber, string agent, const vector<string>& borrowers, vector<Facility*> facilities)
+    : contractNumber(std::move(contractNumber)), agent(std::move(agent)), status("closed"){
 
     // init
     int currencyIndex = -1;
     string start_date_str = facilities[0]->getStartDate();
     string end_date_str = facilities[0]->getEndDate();
+
+    // add borrowers
+    for (const auto& borrower : borrowers) {
+        this->addBorrower(borrower);
+    }
 
     // add facilities
     for (Facility* facility : facilities) {
@@ -34,10 +39,8 @@ Deal::Deal(string contractNumber, string agent, string borrower, vector<Facility
             end_date_str = facility_end_date;
         }
 
-        cout << "agent " << this->getAgent() << endl;
         // add lenders to pool
         for (const auto& lender : facility->getLenders()) {
-            cout << "lender: " << lender << endl;
             // if lender not in pool, add it
             bool found = false;
             for (const auto& poolLender : pool) {
@@ -47,7 +50,6 @@ Deal::Deal(string contractNumber, string agent, string borrower, vector<Facility
                 }
             }
             if (!found && (lender != this->getAgent())) {
-                cout << "lender added: " << lender << endl;
                 this->pool.push_back(lender);
             }
         }
@@ -86,8 +88,8 @@ vector<string> Deal::getPool() const {
     return pool;
 }
 
-string Deal::getBorrower() const {
-    return borrower;
+vector<string> Deal::getBorrowers() const {
+    return borrowers;
 }
 
 vector<double> Deal::getProjectAmounts() const {
@@ -120,6 +122,11 @@ Facility* Deal::addFacility(Facility* facility) {
     return facility;
 }
 
+string Deal::addBorrower(string borrower) {
+    borrowers.push_back(borrower);
+    return borrower;
+}
+
 void Deal::display(bool displayFacilities) {
     cout << "[Deal] "<< contractNumber <<
         " (" << startDate << " => " << endDate << ") status: " << status << endl;
@@ -130,13 +137,19 @@ void Deal::display(bool displayFacilities) {
     cout << projectAmounts[currencies.size()-1] << " (" << currencies[currencies.size()-1] << ")";
     cout << endl;
 
-    cout << "\tBorrower: " << borrower << endl;
+    cout << "\tBorrower: ";
+    const vector<string> &brs = this->getBorrowers();
+    for (int i = 0; i < brs.size() - 1; i++) {
+        cout << brs[i] << ", ";
+    }
+    cout << borrowers[borrowers.size()-1] << endl;
     cout << "\tAgent: " << agent << endl;
     cout << "\tPool: ";
-    for (int i = 0; i < pool.size()-1; i++) {
-        cout << this->pool[i] << ", ";
+    const vector<string> &pls = this->getPool();
+    for (int i = 0; i < pls.size() - 1; i++) {
+        cout << pls[i] << ", ";
     }
-    cout << this->pool[pool.size()-1] << endl;
+    cout << pls[pls.size() - 1] << endl;
     cout << endl;
     if (displayFacilities) {
         for (const auto& facility : facilities) {
@@ -152,8 +165,18 @@ void Deal::serialize(ostream& out) const {
     out << "        " << contractNumber << endl;
     out << "    agent: " << endl;
     out << "        " << agent << endl;
-    out << "    borrower: " << endl;
-    out << "        " << borrower << endl;
+//    out << "    borrowers: " << endl;
+//    out << "        ";
+//    for (const auto& borrower : borrowers) {
+//        out << borrower << ", ";
+//    }
+//    out << endl;
+    out << "    pool: " << endl;
+    out << "        ";
+    for (const auto& lender : pool) {
+        out << lender << ", ";
+    }
+    out << endl;
     out << "    status: " << endl;
     out << "        " << status << endl;
     out << "    startDate: " << endl;
@@ -192,10 +215,10 @@ Deal* Deal::deserialize(istream& in) {
     getline(in, ag);    // Read agent
     ag = Utils::trim(ag);
 
-    // Read borrower
-    getline(in, line);  // Skip "borrower:"
-    getline(in, brw);   // Read borrower
-    brw = Utils::trim(brw);
+//    // Read borrowers
+//    getline(in, line);  // Skip "borrowers:"
+//    getline(in, brw);   // Read borrowers
+//    brw = Utils::trim(brw);
 
     // Read status
     getline(in, line);  // Skip "status:"
@@ -236,5 +259,5 @@ Deal* Deal::deserialize(istream& in) {
         return nullptr;
     }
 
-    return new Deal(cn, ag, brw, facs);
+    return new Deal(cn, ag, {"Total Energie"}, facs);
 }

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <memory>
 #include <fstream>
 #include "Deal.h"
 #include "Facility.h"
@@ -44,38 +43,37 @@ void displayDeals() {
 Deal* createDeal() {
     string contractNumber, agent, borrowerName;
     vector<Facility*> facilitiesToCreate = vector<Facility*>();
-    cout << "Enter contract number: ";
-    cin >> contractNumber;
-    cout << "Enter agent: ";
-    getline(cin >> ws, agent);
-    cout << "Enter borrower: ";
-    getline(cin >> ws, borrowerName);
-
-    // if borrower does not exist, create a new one
-    bool borrowerExists = false;
-    Borrower *borrowerToAdd;
-    for (const auto& borrower : borrowers) {
-        if (borrower->getName() == borrowerName) {
-            borrowerExists = true;
-            borrowerToAdd = borrower;
-            break;
+    contractNumber = Utils::getContractNumber("Enter contract number: ");
+    agent = Utils::getStringInput("Enter agent name: ");
+    vector<string> borrowersToAdd;
+    char addBorrower;
+    do {
+        borrowerName = Utils::getStringInput("Enter borrower name: ");
+        // if borrowers does not exist, create a new one
+        bool borrowerExists = false;
+        for (const auto &borrower: borrowers) {
+            if (borrower->getName() == borrowerName) {
+                borrowerExists = true;
+                borrowersToAdd.push_back(borrower->getName());
+                break;
+            }
         }
-    }
-    if (!borrowerExists) {
-        auto borrower = new Borrower(borrowerName);
-        borrowers.push_back(borrower);
-    }
+        if (!borrowerExists) {
+            auto borrower = new Borrower(borrowerName);
+            borrowersToAdd.push_back(borrower->getName());
+            borrowers.push_back(borrower);
+        }
+
+        addBorrower = Utils::getALetterInput("Add another borrower to this deal? (y/n): ");
+    } while (addBorrower == 'y' || addBorrower == 'o');
 
 
     char addMore;
     do {
         string startDate, endDate, currency;
-        cout << "Enter facility start date (YYYY-MM-DD): ";
-        cin >> startDate;
-        cout << "Enter facility end date (YYYY-MM-DD): ";
-        cin >> endDate;
-        cout << "Enter facility currency: ";
-        cin >> currency;
+        startDate = Utils::getDateInput("Enter facility start date (YYYY-MM-DD): ");
+        endDate = Utils::getDateInput("Enter facility end date (YYYY-MM-DD): ");
+        currency = Utils::getStringInput("Enter facility currency: ");
 
         vector<double> lenderAmounts;
         vector<string> facilityLenders;
@@ -83,16 +81,25 @@ Deal* createDeal() {
         do {
             string lenderName;
             double amount;
-            cout << "Enter lender name: ";
-            getline(cin >> ws, lenderName);
-            cout << "Enter amount: ";
-            cin >> amount;
+            lenderName = Utils::getStringInput("Enter lender name: ");
+            amount = Utils::getMoneyInput("Enter amount: ");
 
+            // search for the lender
+            bool lenderExists = false;
+            for (const auto &lender: lenders) {
+                if (lender->getName() == lenderName) {
+                    lenderExists = true;
+                    break;
+                }
+            }
+            if (!lenderExists) {
+                auto lender = new Lender(lenderName);
+                lenders.push_back(lender);
+            }
             facilityLenders.push_back(lenderName);
             lenderAmounts.push_back(amount);
 
-            cout << "Add another lender to this facility? (y/n): ";
-            cin >> addLender;
+            addLender = Utils::getALetterInput("Add another lender to this facility? (y/n): ");
         } while (addLender == 'y');
 
         auto facility = new Facility(startDate, endDate, lenderAmounts, currency, facilityLenders);
@@ -108,11 +115,10 @@ Deal* createDeal() {
             }
         }
 
-        cout << "Add another facility? (y/n): ";
-        cin >> addMore;
+        addMore = Utils::getALetterInput("Add another facility to this deal? (y/n): ");
     } while (addMore == 'y');
 
-    auto deal = new Deal(contractNumber, agent, borrowerToAdd->getName(), facilitiesToCreate);
+    auto deal = new Deal(contractNumber, agent, borrowersToAdd, facilitiesToCreate);
     deals.push_back(deal);
 
     cout << "Deal created successfully." << endl;
@@ -122,7 +128,7 @@ Deal* createDeal() {
 
 Borrower* createBorrower() {
     string name;
-    cout << "Enter borrower name: ";
+    cout << "Enter borrowers name: ";
     getline(cin >> ws, name);
     auto borrower = new Borrower(name);
     borrowers.push_back(borrower);
@@ -146,32 +152,39 @@ Lender* createLender() {
 
 void displayBorrowerDeals() {
     string borrowerName;
-    cout << "Enter borrower name: ";
+    cout << "Enter borrowers name: ";
     getline(cin >> ws, borrowerName);
-    cout << "Deals for borrower " << borrowerName << ":" << endl;
+    cout << "Deals for borrowers " << borrowerName << ":" << endl;
     for (const auto& deal : deals) {
-        if (deal->getBorrower() == borrowerName) {
-            deal->display();
+        for (const string& dealBorrower: deal->getBorrowers()) {
+            if (dealBorrower == borrowerName) {
+                deal->display();
+            }
         }
     }
 }
 
 void repayFacility() {
     string borrowerName;
-    cout << "Enter borrower name: ";
+    cout << "Enter borrowers name: ";
     getline(cin >> ws, borrowerName);
     string contractNumber;
     bool dealFound;
-    Deal *deal = nullptr;
+    Deal *deal;
     do {
         dealFound = false;
         cout << "Enter Deal contract Number: ";
         cin >> contractNumber;
         // find the Deal
         for (const auto &d: deals) {
-            if (d->getContractNumber() == contractNumber && d->getBorrower() == borrowerName) {
-                dealFound = true;
-                deal = d;
+            if (d->getContractNumber() == contractNumber) {
+                for (const string& dealBorrower: d->getBorrowers()) {
+                    if (dealBorrower == borrowerName) {
+                        dealFound = true;
+                        deal = d;
+                        break;
+                    }
+                }
                 break;
             }
         }
@@ -361,12 +374,12 @@ void prepareDemoData(){
     auto facility1 = new Facility("2021-02-01", "2021-12-31", lenderAmounts1, "USD", lendersVect1);
     auto facility2 = new Facility("2021-01-01", "2021-11-30", lenderAmounts2, "EUR", lendersVect2);
     auto facility3 = new Facility("2021-06-01", "2024-11-30", lenderAmounts2, "EUR", lendersVect1);
-    auto deal1 = new Deal("S0001", lender1->getName(), borrower1->getName(), vector<Facility*>{facility1, facility2, facility3});
+    auto deal1 = new Deal("S0001", lender1->getName(), vector<string>{borrower1->getName()}, vector<Facility*>{facility1, facility2, facility3});
 
     vector<string> lendersVect3 = vector<string>{lender2->getName(), lender3->getName()};
     auto facility4 = new Facility("2021-02-01", "2021-12-31", lenderAmounts1, "RMB", lendersVect2);
     auto facility5 = new Facility("2022-01-01", "2025-12-31", lenderAmounts2, "USD", lendersVect3);
-    auto deal2 = new Deal("S0002", lender3->getName(), borrower2->getName(), vector<Facility*>{facility4, facility5});
+    auto deal2 = new Deal("S0002", lender3->getName(), vector<string>{borrower2->getName(), borrower3->getName()}, vector<Facility*>{facility4, facility5});
 
     // add Facilities to Lenders' portfolios
     for (auto &createdFacility: {facility1, facility2, facility3, facility4, facility5}) {

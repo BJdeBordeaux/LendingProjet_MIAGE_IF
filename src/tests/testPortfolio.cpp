@@ -83,7 +83,7 @@ int main(){
 //                               "    ]\n"
 //                               "    parts: [\n"
 //                               "Part: {\n"
-//                               "    borrower: \n"
+//                               "    borrowers: \n"
 //                               "        Term Loan\n"
 //                               "    repaidAmount: 1000\n"
 //                               "}\n"

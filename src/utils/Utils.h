@@ -32,6 +32,25 @@ public:
 
     // trim white space
     static string trim(const string &s);
+
+    // get an integer as input
+    static int getIntInput(const string &prompt);
+
+    // get a double as input for money
+    static double getMoneyInput(const string &prompt);
+
+    // get the first character of a string input, this char should be a letter
+    static char getALetterInput(const string &prompt);
+
+    // get date input
+    static string getDateInput(const string &prompt);
+
+    // get contract number
+    static string getContractNumber(const string &prompt);
+
+    // get line string input
+    static string getStringInput(const string &prompt);
+
 };
 
 #endif // UTILS_H
