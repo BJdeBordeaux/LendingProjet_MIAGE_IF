@@ -15,8 +15,6 @@ Nom1Nom2/
 │   ├── Lender.cpp
 │   ├── Account.h
 │   ├── Account.cpp
-│   ├── Database.h
-│   ├── Database.cpp
 │   ├── utils/
 │   │   ├── Utils.h
 │   │   └── Utils.cpp

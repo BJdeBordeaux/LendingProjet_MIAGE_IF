@@ -68,3 +68,4 @@ add_executable(Deal src/Deal.cpp src/Lender.cpp src/Portfolio.cpp src/Facility.c
         src/tests/testDeal.cpp src/Part.cpp)
 add_executable(Part src/tests/testPart.cpp src/Part.cpp src/utils/Utils.cpp)
 add_executable(Utils src/utils/Utils.cpp src/tests/testUtils.cpp)
+add_executable(Main src/Main.cpp src/Account.cpp src/utils/Utils.cpp src/Part.cpp src/Deal.cpp src/Lender.cpp src/Portfolio.cpp src/Facility.cpp src/Borrower.cpp)

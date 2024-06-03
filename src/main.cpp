@@ -319,6 +319,7 @@ void displayMenu() {
                             cout << "1. See borrower's deals" << endl;
                             cout << "2. Repay facility" << endl;
                             cout << "3. Back" << endl;
+                            cout << "Enter your choice: ";
                             cin >> subChoice3;
                             if (subChoice3 == 1) displayBorrowerDeals();
                             else if (subChoice3 == 2) repayFacility();
@@ -329,6 +330,7 @@ void displayMenu() {
                             cout << "1. See lender's deals" << endl;
                             cout << "2. See lender's portfolio" << endl;
                             cout << "3. Back" << endl;
+                            cout << "Enter your choice: ";
                             cin >> subChoice3;
                             if (subChoice3 == 1) displayLenderDeals();
                             else if (subChoice3 == 2) displayLenderPortfolio();
